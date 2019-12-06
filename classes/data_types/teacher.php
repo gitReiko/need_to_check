@@ -8,11 +8,12 @@ class CheckingTeacher extends ParentType
     // params neccessary for gui
     private $contacts;
     private $items;
+    private $fullname;
 
     function __construct(stdClass $grade, $teacherid)
     {
         $this->id = $teacherid;
-        $this->name = $this->get_teacher_name();
+        $this->init_teacher_name_and_fullname();
         $this->contacts = $this->get_teacher_contacts();
 
         $this->uncheckedWorksCount = 0;
@@ -50,44 +51,54 @@ class CheckingTeacher extends ParentType
         {
             global $DB;
             $teacher = $DB->get_record('user', array('id'=>$this->id), 'email, phone1, phone2');
-            
-            $newline = '&#013;';
+            $newline = '<br>';
+
+            $contacts.= $this->fullname.$newline;
             if(!empty($teacher->email))
             {
-                $contacts.= get_string('email', 'block_need_to_check').': '.$teacher->email.$newline;
+                $contacts.= '✉ '.$teacher->email.$newline;
             }
             if(!empty($teacher->phone1))
             {
-                $contacts.= get_string('phone', 'block_need_to_check').' 1: '.$teacher->phone1.$newline;
+                $contacts.= '☎ '.$teacher->phone1.$newline;
             }
             if(!empty($teacher->phone2))
             {
-                $contacts.= get_string('phone', 'block_need_to_check').' 2: '.$teacher->phone2;
+                $contacts.= '☎ '.$teacher->phone2;
             }
+        }
+        else 
+        {
+            $contacts = get_string('not_assigned', 'block_need_to_check');
         }
 
         return $contacts;
     }
 
-    private function get_teacher_name() : string 
+    private function init_teacher_name_and_fullname() : void 
     {
         if(empty($this->id))
         {
-            return '';
+            $this->name = '';
+            $this->fullname = '';
         } 
         else
         {
-            return $this->get_user_name($this->id);
+            $user = $this->get_user_from_database($this->id);
+            $this->name = $this->get_teacher_shortname($user);
+            $this->fullname = $this->get_teacher_fullname($user);
         }
     }
 
-    private function get_user_name(int $id) : string
+    private function get_user_from_database(int $id) : stdClass
     {
         global $DB;
+        return $DB->get_record('user', array('id'=>$id), 'id, firstname, lastname');
+    }
 
-        $user = $DB->get_record('user', array('id'=>$id), 'id, firstname, lastname');
-
-        $temp = explode(' ', $user->firstname);
+    private function get_teacher_shortname(stdClass $teacher) : string 
+    {
+        $temp = explode(' ', $teacher->firstname);
         $str = ' ';
 
         foreach($temp as $key2 => $name)
@@ -95,8 +106,12 @@ class CheckingTeacher extends ParentType
             $str .= mb_substr($name, 0, 1).'.';
         }
 
-        return $user->lastname.$str;
+        return $teacher->lastname.$str;
     }
 
+    private function get_teacher_fullname(stdClass $teacher) : string 
+    {
+        return $teacher->lastname.' '.$teacher->firstname;
+    }
 
 }

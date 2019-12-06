@@ -1,4 +1,4 @@
-
+@import "css/elements.less";
 
 div.chekingTeacher
 {
@@ -43,4 +43,26 @@ div.chekingItem
 .redColor
 {
     color: red;
+}
+
+.NeedToCheckTooltip
+{
+    position:absolute;
+    left:-2000px;
+    background:transparent;
+    padding:5px;
+}
+
+.NeedToCheckTooltip p
+{
+    margin:0;
+    padding:0;
+    color:#fff;
+    background:#222;
+    padding:2px 7px;
+    font-size: 24px;
+
+    -webkit-border-radius: 5px;
+    -moz-border-radius: 5px;
+    border-radius: 5px;
 }

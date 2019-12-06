@@ -76,11 +76,11 @@ class NeedToCheckManagerGUI
 
     private function get_teacher_row($teacher, $teacherid) : string 
     {
-        $row = '<div class="chekingTeacher horizontal-node" 
+        $row = '<div class="chekingTeacher horizontal-node jqueryTooltip" 
                         id="teacher'.$teacherid.'" 
                         onclick="hide_or_show_block(`'.$teacherid.'`, `teacher`)" 
                         style="margin-left: 20px !important;" ';
-        if(!empty($teacher->get_contacts())) $row.= 'title="'.$teacher->get_contacts().'"';
+        if(!empty($teacher->get_contacts())) $row.= 'title="'.$teacher->get_contacts().'" ';
         $row.= '> ';
 
         if(!empty($teacher->get_name())) $row.= $teacher->get_name();
