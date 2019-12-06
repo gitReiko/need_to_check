@@ -11,12 +11,14 @@ abstract class GradeGradesGetter
         $grades = $this->get_ungraded_users();
         $grades = $this->filter_out_all_non_student_grades($grades);
 
+        /* Форум отключен из-за того, что работает не так как преполагалось !!!
         $forumGrades = $this->get_forum_grades();
         if(is_array($forumGrades))
         {
             $grades = array_merge($grades, $forumGrades);
             usort($grades, "cmp_need_to_check_courses");
         }
+        */
 
         return $grades;
     }
